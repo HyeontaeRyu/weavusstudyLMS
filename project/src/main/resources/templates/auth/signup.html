@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link rel="stylesheet" th:href="@{/static/common.css}"/>
+    <link rel="stylesheet" th:href="@{/static/signup.css}"/>
+    <script src="/static/auth.js"></script>
+    <title>会員登録</title>
+</head>
+<body class="signup-page">
+
+<div class="signup-card" role="main">
+    <form class="signup-form" method="post" th:action="@{/auth/signup}" th:object="${signupRequest}">
+        <input th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+
+        <h1 class="title">電子学習管理システム</h1>
+
+        <div class="field">
+            <label>名前</label>
+            <input class="signup-input" th:field="*{name}" type="text"/>
+            <div class="field-error" th:errors="*{name}" th:if="${#fields.hasErrors('name')}"></div>
+        </div>
+
+        <div class="field">
+            <label>メールアドレス</label>
+            <input class="signup-input" th:field="*{email}" type="email"/>
+            <div class="field-error" th:errors="*{email}" th:if="${#fields.hasErrors('email')}"></div>
+        </div>
+
+        <div class="field">
+            <label>パスワード</label>
+            <input class="signup-input"
+                   minlength="12"
+                   pattern="(?=.*\d)(?=.*[a-zA-Z]).{12,40}"
+                   required
+                   th:field="*{password}"
+                   title="12文字以上、英字と数字を少なくとも1つ含めてください"
+                   type="password"/>
+            <div class="field-error" th:errors="*{password}" th:if="${#fields.hasErrors('password')}"></div>
+        </div>
+
+        <button class="btn-submit" type="submit">会員登録</button>
+    </form>
+</div>
+
+<div th:if="${message}">
+    <p th:text="${message}"></p>
+</div>
+
+</body>
+</html>

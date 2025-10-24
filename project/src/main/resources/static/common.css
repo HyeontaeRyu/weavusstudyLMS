@@ -1,0 +1,62 @@
+:root {
+    --bg-color: #F8F8F8;
+    --text-color: #222222;
+    --muted-color: #666666;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: "Hina Mincho", "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+.main-container {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1rem;
+}
+
+p, label {
+    color: var(--text-color);
+    margin: 0 0 0.75rem 0;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.field-error {
+    color: #c00;
+    background: #fff5f5;
+    padding: 6px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-top: 6px;
+}
+
+.alert {
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: #e9f7ef;
+    color: #1b6b36;
+    border: 1px solid #c7eed2;
+}

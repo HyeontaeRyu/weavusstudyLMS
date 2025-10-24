@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: project
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lms
+    username: root
+    password: ${LMS_DB_PASSWORD}
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
+  mvc:
+    static-path-pattern: /static/**
+springdoc:
+  swagger-ui:
+    path: /swagger
+mybatis:
+  mapper-locations: classpath:xml/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    jdbc-type-for-null: NULL
+logging:
+  level:
+    org.springframework.security.web.FilterChainProxy: DEBUG
+    org.example.project.config.security: DEBUG
