@@ -1,0 +1,14 @@
+<nav class="tab-menu" th:fragment="tabs(activeTab)">
+    <a th:classappend="${activeTab == 'dashboard'} ? 'active'" th:href="@{/}">
+        ダッシュボード
+    </a>
+    <a th:classappend="${activeTab == 'courses'} ? 'active'" th:href="@{/courses}">
+        受講コース
+    </a>
+    <a th:classappend="${activeTab == 'mycourses'} ? 'active'" th:href="@{/mycourses}">
+        受講中のコース
+    </a>
+    <a th:classappend="${activeTab == 'exams'} ? 'active'" th:href="@{/exams}">
+        試験・課題
+    </a>
+</nav>

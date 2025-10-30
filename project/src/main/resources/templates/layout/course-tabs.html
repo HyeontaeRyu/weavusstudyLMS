@@ -1,0 +1,10 @@
+<nav class="tab-menu" th:fragment="courseTabs(courseId, activeSubTab)">
+    <a th:classappend="${activeSubTab == 'detail'} ? 'active'"
+       th:href="@{'/courses/' + ${courseId}}">
+        講義詳細
+    </a>
+    <a th:classappend="${activeSubTab == 'exams'} ? 'active'"
+       th:href="@{'/courses/' + ${courseId} + '/exams'}">
+        試験・課題
+    </a>
+</nav>

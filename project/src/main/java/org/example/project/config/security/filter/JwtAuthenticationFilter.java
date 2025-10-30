@@ -2,11 +2,12 @@ package org.example.project.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.example.project.config.security.CustomUserDetails;
 import org.example.project.config.security.JwtProvider;
-import org.example.project.model.Role;
 import org.example.project.model.dto.LoginRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +28,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtProvider = jwtProvider;
     }
 
-    // ✅ POST /auth/login 요청만 인증 필터로 처리
     @Override
     protected boolean requiresAuthentication(HttpServletRequest request, HttpServletResponse response) {
         return "POST".equalsIgnoreCase(request.getMethod())
@@ -53,21 +53,38 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain chain, Authentication authResult) throws IOException {
-        String email = authResult.getName();
-        Object authorityObj = authResult.getAuthorities().iterator().next();
-        String authority = authorityObj.toString();
-        Role role = Role.valueOf(authority);
 
-        log.info("[JwtAuthFilter] Authentication success: {}, role={}", email, role);
+        CustomUserDetails user = (CustomUserDetails) authResult.getPrincipal();
 
-        String accessToken = jwtProvider.createAccessToken(email, role);
-        String refreshToken = jwtProvider.createRefreshToken(email);
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
+
+        Cookie accessCookie = new Cookie("accessToken", accessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge(60 * 15);
+
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(60 * 60 * 24 * 7);
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
+
+        log.info("[JwtAuthFilter] Authentication success: {} ({})",
+                user.getEmail(), user.getRole().name());
 
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getWriter(), Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "role", role.name()
+                "result", "ok",
+                "email", user.getEmail(),
+                "name", user.getName(),
+                "role", user.getRole().name()
         ));
     }
+
+
 }

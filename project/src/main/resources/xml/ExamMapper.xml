@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.project.mapper.ExamMapper">
+
+    <select id="selectAvailableExamsByUserId"
+            resultType="org.example.project.model.dto.ExamListDto">
+
+        SELECT e.id                                                 AS examId,
+               c.id                                                 AS courseId,
+               c.title                                              AS courseTitle,
+               e.title                                              AS examTitle,
+               e.description                                        AS description,
+               e.total_score                                        AS totalScore,
+               e.deadline                                           AS deadline,
+               e.duration_minutes                                   AS durationMinutes,
+               CASE WHEN er.id IS NOT NULL THEN TRUE ELSE FALSE END AS isTaken,
+               er.status                                            AS resultStatus
+        FROM ENROLLMENTS en
+                 INNER JOIN COURSES c ON en.course_id = c.id
+                 INNER JOIN EXAMS e ON e.course_id = c.id
+                 LEFT JOIN EXAM_RESULTS er
+                           ON er.exam_id = e.id
+                               AND er.user_id = #{userId}
+        WHERE en.user_id = #{userId}
+          AND en.status = 'ENROLLED'
+        ORDER BY c.id ASC
+            LIMIT #{page.size}
+        OFFSET #{page.offset}
+    </select>
+
+    <select id="selectExamsByCourseIdForUser"
+            resultType="org.example.project.model.dto.ExamListDto">
+        SELECT e.id                                                AS examId,
+               e.course_id                                         AS courseId,
+               c.title                                             AS courseTitle,
+               e.title                                             AS examTitle,
+               e.description                                       AS description,
+               e.total_score                                       AS totalScore,
+               e.duration_minutes                                  AS durationMinutes,
+               e.deadline                                          AS deadline,
+               CASE WHEN r.id IS NOT NULL THEN TRUE ELSE FALSE END AS isTaken,
+               r.status                                            AS resultStatus
+        FROM EXAMS e
+                 JOIN COURSES c ON e.course_id = c.id
+                 LEFT JOIN EXAM_RESULTS r ON e.id = r.exam_id AND r.user_id = #{userId}
+        WHERE e.course_id = #{courseId}
+        ORDER BY e.deadline ASC
+    </select>
+
+    <select id="countAvailableExamsByUserId" resultType="int">
+        SELECT COUNT(*)
+        FROM ENROLLMENTS en
+                 INNER JOIN COURSES c ON en.course_id = c.id
+                 INNER JOIN EXAMS e ON e.course_id = c.id
+        WHERE en.user_id = #{userId}
+          AND en.status = 'ENROLLED'
+    </select>
+
+    <select id="findExamById" resultType="org.example.project.model.Exam">
+        SELECT id,
+               course_id,
+               title,
+               description,
+               total_score,
+               duration_minutes,
+               deadline,
+               created_at,
+               updated_at
+        FROM EXAMS
+        WHERE id = #{id}
+    </select>
+
+    <select id="findQuestionsByExamId" resultType="org.example.project.model.ExamQuestion">
+        SELECT id,
+               exam_id,
+               question_text,
+               question_type,
+               options,
+               correct_answer,
+               score,
+               order_index,
+               created_at
+        FROM EXAM_QUESTIONS
+        WHERE exam_id = #{examId}
+        ORDER BY order_index ASC
+    </select>
+
+    <select id="existsExamResult" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM EXAM_RESULTS
+        WHERE user_id = #{userId}
+          AND exam_id = #{examId}
+    </select>
+
+    <insert id="insertExamResult" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO EXAM_RESULTS (user_id, exam_id, score, submitted_at)
+        VALUES (#{userId}, #{examId}, 0, NOW())
+    </insert>
+
+    <insert id="insertExamAnswer">
+        INSERT INTO EXAM_ANSWERS (exam_result_id, question_id, user_answer, is_correct, answered_at)
+        VALUES (#{examResultId}, #{questionId}, #{userAnswer}, #{isCorrect}, NOW())
+    </insert>
+
+    <update id="updateExamResultScore">
+        UPDATE EXAM_RESULTS
+        SET score = #{score}
+        WHERE id = #{examResultId}
+    </update>
+
+    <select id="selectQuestionsByExamId" resultType="org.example.project.model.ExamQuestion">
+        SELECT *
+        FROM EXAM_QUESTIONS
+        WHERE exam_id = #{examId}
+        ORDER BY order_index ASC
+    </select>
+
+    <select id="selectExamResultDetail" resultType="org.example.project.model.dto.ExamResultDetailDto">
+        SELECT e.id             AS examId,
+               e.title          AS examTitle,
+               e.total_score    AS totalScore,
+               r.score          AS userScore,
+               r.status         AS resultStatus,
+               q.id             AS questionId,
+               q.question_text  AS questionText,
+               q.question_type  AS questionType,
+               q.correct_answer AS correctAnswer,
+               a.user_answer    AS userAnswer,
+               a.is_correct     AS isCorrect
+        FROM EXAM_RESULTS r
+                 JOIN EXAMS e ON r.exam_id = e.id
+                 JOIN EXAM_ANSWERS a ON a.exam_result_id = r.id
+                 JOIN EXAM_QUESTIONS q ON q.id = a.question_id
+        WHERE r.user_id = #{userId}
+          AND r.exam_id = #{examId}
+        ORDER BY q.order_index ASC;
+    </select>
+</mapper>

@@ -1,0 +1,19 @@
+<header class="site-header">
+    <script src="/static/auth.js"></script>
+    <div class="header-inner">
+        <h1 class="logo">
+            <a th:href="@{/}">学習管理システム</a>
+        </h1>
+
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-icon" th:text="${#strings.substring(userName, 0, 1)}">佐</div>
+                <div class="user-details">
+                    <span class="user-name" th:text="${userName}">佐藤太郎</span>
+                    <span class="user-role" th:text="${userRoleDisplay}">受講者</span>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()" type="button">ログアウト</button>
+        </div>
+    </div>
+</header>

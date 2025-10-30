@@ -15,7 +15,12 @@ body.signup-page {
     background: var(--bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: "Hina Mincho", "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif;
+    font-family: "Kosugi Maru",
+    "M PLUS Rounded 1c",
+    "Hiragino Maru Gothic ProN",
+    "Yu Gothic UI",
+    "Meiryo",
+    sans-serif;
 }
 
 .signup-card {

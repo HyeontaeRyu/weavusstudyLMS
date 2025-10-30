@@ -44,23 +44,15 @@
         const res = await fetch("/auth/login", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({email, password})
+            body: JSON.stringify({email, password}),
+            credentials: "include"
         });
 
         if (res.ok) {
-            const data = await res.json();
-            localStorage.setItem("accessToken", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
-            localStorage.setItem("role", data.role);
-
-            if (data.role === "ROLE_ADMIN") {
-                window.location.href = "/admin";
-            } else if (data.role === "ROLE_TEACHER") {
-                window.location.href = "/teacher";
-            } else {
-                window.location.href = "/";
-            }
+            console.log("ログイン成功");
+            window.location.href = "/";
         } else {
+            console.error("ログイン失敗");
             document.getElementById("loginError").innerText = "ログインに失敗しました。";
         }
     });

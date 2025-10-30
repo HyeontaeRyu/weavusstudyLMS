@@ -1,10 +1,13 @@
 package org.example.project.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.project.config.security.CustomUserDetails;
 import org.example.project.config.security.JwtProvider;
-import org.example.project.model.Role;
 import org.example.project.model.User;
 import org.example.project.model.dto.SignupRequest;
 import org.example.project.service.UserService;
@@ -12,10 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -71,25 +75,52 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> request) {
-        String refreshToken = request.get("refreshToken");
-        if (refreshToken == null || refreshToken.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Refresh token is missing"));
+    public ResponseEntity<?> refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
         }
 
-        if (!jwtProvider.validateToken(refreshToken)) {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid or expired refresh token"));
+        if (refreshToken == null || !jwtProvider.validateToken(refreshToken)) {
+            return ResponseEntity.status(401).build();
         }
 
-        String email = jwtProvider.getEmail(refreshToken);
-        Role role = jwtProvider.getRole(refreshToken);
-        String newAccessToken = jwtProvider.createAccessToken(email, role);
+        CustomUserDetails user = jwtProvider.getUserDetails(refreshToken);
+        String newAccessToken = jwtProvider.createAccessToken(user);
 
-        log.info("Refresh token used by {} → new access token issued", email);
+        Cookie newAccessCookie = new Cookie("accessToken", newAccessToken);
+        newAccessCookie.setHttpOnly(true);
+        newAccessCookie.setSecure(true);
+        newAccessCookie.setPath("/");
+        newAccessCookie.setMaxAge(60 * 60 * 24);
+        response.addCookie(newAccessCookie);
 
-        return ResponseEntity.ok(Map.of(
-                "accessToken", newAccessToken,
-                "message", "Access token refreshed successfully"
-        ));
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie accessCookie = new Cookie("accessToken", null);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge(0);
+
+        Cookie refreshCookie = new Cookie("refreshToken", null);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(0);
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -16,7 +16,12 @@ html, body {
 html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: "Hina Mincho", "Hiragino Mincho ProN", "Yu Mincho", "MS PMincho", serif;
+    font-family: "Kosugi Maru",
+    "M PLUS Rounded 1c",
+    "Hiragino Maru Gothic ProN",
+    "Yu Gothic UI",
+    "Meiryo",
+    sans-serif;
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-color);
@@ -59,4 +64,132 @@ a:hover {
     background: #e9f7ef;
     color: #1b6b36;
     border: 1px solid #c7eed2;
+}
+
+.tab-menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 80%;
+    margin: 25px auto;
+    padding: 8px 0;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tab-menu a {
+    position: relative;
+    padding: 6px 18px;
+    font-weight: 500;
+    color: #555;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+/* hover 시 살짝 음영 */
+.tab-menu a:hover {
+    color: #000;
+    background: rgba(0, 0, 0, 0.04);
+}
+
+/* 활성 탭 스타일 */
+.tab-menu a.active {
+    color: #000;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid #ccc;
+}
+
+.site-header {
+    background: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    height: 70px;
+    padding: 0.8rem 2rem;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-inner {
+    width: 95%;
+    max-width: 1500px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    display: inline-block;
+    vertical-align: middle;
+    height: 56px;
+    line-height: 56px;
+    font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+}
+
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.3rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.user-icon {
+    background-color: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    width: 1.8rem;
+    height: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.user-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.user-role {
+    font-size: 0.6rem;
+    color: #777;
+}
+
+.btn-logout {
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #efefef;
+    border-color: #bbb;
 }

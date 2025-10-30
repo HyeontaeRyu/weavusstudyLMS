@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${course.title} + ' | 試験一覧 | 学習管理システム'">試験一覧</title>
+    <link rel="stylesheet" th:href="@{/static/common.css}">
+    <link rel="stylesheet" th:href="@{/static/course-exams.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/course-tabs :: courseTabs(${course.id}, 'exams')}"></div>
+
+<main class="exam-container">
+    <section class="exam-header">
+        <div>
+            <h1 th:text="${course.title}">JavaScript基礎</h1>
+            <p class="teacher" th:text="${course.teacherName}">高橋佑真</p>
+        </div>
+
+        <div class="grade-box">
+            総合評価：
+            <span class="grade"
+                  th:text="${course.overallGrade != null ? course.overallGrade : '-'}">-</span>
+        </div>
+    </section>
+
+    <section class="exam-list">
+        <div class="exam-card" th:each="exam : ${exams}">
+            <h2 th:text="${exam.examTitle}">中間テスト</h2>
+
+            <div class="exam-info">
+                <p>
+                    <strong>締切：</strong>
+                    <span th:text="${#temporals.format(exam.deadline, 'yyyy-MM-dd HH:mm')}">2026-07-01 23:59</span>
+                </p>
+                <p>
+                    <strong>制限時間：</strong>
+                    <span th:text="${exam.durationMinutes + '分'}">60分</span>
+                </p>
+                <p>
+                    <strong>配点：</strong>
+                    <span th:text="${exam.totalScore + '点'}">100点</span>
+                </p>
+                <p class="exam-desc" th:text="${exam.description}">テストの概要説明</p>
+            </div>
+
+            <div class="exam-action">
+                <!-- 응시 가능 -->
+                <a class="exam-btn start"
+                   href="#"
+                   th:if="${!exam.isTaken and #temporals.createNow().isBefore(exam.deadline)}"
+                   th:onclick="|window.open('/exams/' + ${exam.examId},
+                'examPopup',
+                'width=900,height=950,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no'); return false;|">
+                    受験開始
+                </a>
+
+                <button class="exam-btn disabled"
+                        disabled
+                        th:if="${!exam.isTaken and #temporals.createNow().isAfter(exam.deadline)}">
+                    締切済み
+                </button>
+
+                <button class="exam-btn submitted"
+                        disabled
+                        th:if="${exam.resultStatus == 'SUBMITTED'}">
+                    応試完了
+                </button>
+
+                <button class="exam-btn review"
+                        disabled
+                        th:if="${exam.resultStatus == 'GRADED'}">
+                    採点済み
+                </button>
+            </div>
+        </div>
+
+        <p class="no-exam" th:if="${#lists.isEmpty(exams)}">現在この講義には試験がありません。</p>
+    </section>
+</main>
+
+</body>
+</html>

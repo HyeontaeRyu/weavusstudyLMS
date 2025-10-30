@@ -1,32 +1,28 @@
 package org.example.project.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.project.model.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 public class MainController {
+
+    /* TODO:
+     * - ENROLLMENT 테이블 이거 프로젝트에 맞게 수정
+     * - 대쉬보드 수강중코스 완료코스 평균평가 등 맞게 뜨게 수정
+     * - ENROLLMENT의 경우,
+     * */
+
     @GetMapping
-    public String index(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            log.debug("Authentication object is null or not authenticated");
-            return "index";
+    public String index(Authentication auth, Model model) {
+        if (auth == null || !auth.isAuthenticated()) {
+            log.debug("Not authenticated — redirecting to login");
+            return "redirect:/auth/login";
         }
-        log.debug("Authentication object is authenticated");
-
-        var authorities = authentication.getAuthorities();
-        boolean isStudent = authorities.stream()
-                .anyMatch(a -> a.getAuthority().equals(Role.ROLE_STUDENT.name()));
-
-        if (isStudent) {
-            return "student";
-        }
-
-        return "student";
+        
+        return "index";
     }
 }

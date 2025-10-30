@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${exam.title} + ' | 試験結果 | 学習管理システム'">試験結果</title>
+    <link rel="stylesheet" th:href="@{/static/common.css}">
+    <link rel="stylesheet" th:href="@{/static/exam-result.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/header :: header}"></div>
+
+<main class="exam-result-container">
+    <h2 th:text="${exam.title} + ' の結果'"></h2>
+
+    <section class="score-section">
+        <p><strong>あなたの得点：</strong>
+            <span th:text="${userScore} + ' / ' + ${exam.totalScore} + '点'"></span>
+        </p>
+        <p><strong>状態：</strong>
+            <span th:text="${resultStatus == 'GRADED' ? '採点済み' : '応試完了'}"></span>
+        </p>
+    </section>
+
+    <section class="questions">
+        <div class="question" th:each="q : ${results}">
+            <p class="question-text">[[${q.questionText}]]</p>
+            <div class="answer-block"
+                 th:classappend="${q.isCorrect} ? 'correct' : 'wrong'">
+                <p><strong>あなたの回答：</strong> [[${q.userAnswer}]]</p>
+                <p><strong>正解：</strong> [[${q.correctAnswer}]]</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="actions">
+        <a class="back-btn" href="/exams">一覧に戻る</a>
+    </div>
+</main>
+
+</body>
+</html>

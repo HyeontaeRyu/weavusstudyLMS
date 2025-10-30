@@ -1,0 +1,250 @@
+body {
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic Pro", sans-serif;
+    color: #222;
+    background: #fafafa;
+    margin: 0;
+    padding: 0;
+}
+
+/* 메인 컨테이너 */
+.course-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 40px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+/* 헤더 영역 */
+.course-header {
+    padding: 30px 0 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.course-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.course-title-group h1 {
+    font-size: 2em;
+    margin-bottom: 6px;
+    color: #111;
+}
+
+.course-title-group .teacher {
+    color: #555;
+    margin: 0;
+    font-size: 0.95em;
+}
+
+/* 버튼 영역 */
+.course-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    padding-top: 1.2rem;
+}
+
+.btn-outline {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    background: #000;
+    border: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+    background: #222;
+    transform: translateY(-1px);
+}
+
+.cancel-btn {
+    background: #444;
+}
+
+.cancel-btn:hover {
+    background: #666;
+}
+
+/* 신청중 (클릭 불가능) */
+.btn-pending-disabled {
+    background: #111;
+    color: #fff;
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* 신청 불가 상태 (기한 만료) */
+.btn-disabled {
+    background: #aaa;
+    color: #fff;
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* 강의 설명 */
+.course-description {
+    padding: 35px 20px 10px 20px;
+}
+
+.course-description h2 {
+    border-left: 4px solid #888;
+    padding-left: 10px;
+    font-size: 1.25em;
+    margin-bottom: 18px;
+}
+
+.description-text {
+    white-space: pre-line;
+    line-height: 1.8;
+    color: #333;
+    font-size: 1em;
+}
+
+/* 섹션 목록 */
+.sections {
+    padding: 15px 20px 40px 20px;
+}
+
+.section-box {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+    overflow: hidden;
+}
+
+/* details/summary 스타일 */
+details summary {
+    position: relative;
+    cursor: pointer;
+    padding: 16px 20px;
+    font-weight: 600;
+    font-size: 1.1em;
+    list-style: none;
+    transition: background 0.2s ease;
+}
+
+details summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary::after {
+    content: '▶';
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9em;
+    color: #666;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+details[open] summary::after {
+    content: '▼';
+    color: #333;
+}
+
+details[open] summary {
+    background: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+}
+
+/* 강의 리스트 */
+.lecture-list {
+    list-style: none;
+    margin: 0;
+    padding: 12px 18px 14px 18px;
+}
+
+.lecture-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.lecture-list li:last-child {
+    border-bottom: none;
+}
+
+.lecture-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1em;
+    color: #222;
+}
+
+.lecture-title i {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.lecture-duration {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .course-container {
+        padding: 0 20px;
+    }
+
+    .course-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .course-actions {
+        margin-top: 12px;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .btn-outline {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* 탭 메뉴 컨테이너 */
+.tab-menu {
+    max-width: 1100px;
+}
+
+.alert-error {
+    background: #ffecec;
+    color: #b30000;
+    border: 1px solid #f5c2c2;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95em;
+}
+
+.alert-error i {
+    color: #d00000;
+    font-size: 1.1em;
+}

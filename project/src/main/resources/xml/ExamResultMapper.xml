@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.project.db.mapper.ExamResultMapper">
+
+    <insert id="insertExamResult" parameterType="org.example.project.model.ExamResult" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO EXAM_RESULTS (user_id, exam_id, score, submitted_at)
+        VALUES (#{userId}, #{examId}, #{score}, NOW())
+    </insert>
+
+    <insert id="insertExamAnswer" parameterType="org.example.project.model.ExamAnswer">
+        INSERT INTO EXAM_ANSWERS (exam_result_id, question_id, user_answer, is_correct, answered_at)
+        VALUES (#{examResultId}, #{questionId}, #{userAnswer}, #{isCorrect}, NOW())
+    </insert>
+
+    <update id="updateExamResultScore">
+        UPDATE EXAM_RESULTS
+        SET score = #{score}
+        WHERE id = #{resultId}
+    </update>
+
+</mapper>

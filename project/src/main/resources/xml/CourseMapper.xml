@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.project.mapper.CourseMapper">
+
+    <select id="countUserCourse" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM ENROLLMENTS
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findAllCoursesWithStatus"
+            parameterType="long"
+            resultType="org.example.project.model.dto.UserEnrollmentStatus">
+        SELECT c.id,
+               c.title,
+               c.description_simple               AS descriptionSimple,
+               c.description,
+               COALESCE(e.status, 'NOT_ENROLLED') AS enrollmentStatus,
+               COALESCE(e.progress_rate, 0)       AS progressRate,
+               c.deadline,
+               u.name                             AS teacherName
+        FROM COURSES c
+                 JOIN USERS u ON c.teacher_id = u.id
+                 LEFT JOIN ENROLLMENTS e
+                           ON c.id = e.course_id
+                               AND e.user_id = #{userId}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <select id="findAllCoursesWithStatusPaged"
+            parameterType="map"
+            resultType="org.example.project.model.dto.UserEnrollmentStatus">
+        SELECT c.id                               AS id,
+               c.title,
+               c.description_simple               AS descriptionSimple,
+               c.description,
+               COALESCE(e.status, 'NOT_ENROLLED') AS enrollmentStatus,
+               COALESCE(e.progress_rate, 0)       AS progressRate,
+               c.deadline,
+               u.name                             AS teacherName
+        FROM COURSES c
+                 JOIN USERS u ON c.teacher_id = u.id
+                 LEFT JOIN ENROLLMENTS e
+                           ON c.id = e.course_id
+                               AND e.user_id = #{userId}
+        ORDER BY c.id DESC
+            LIMIT #{page.size}
+        OFFSET #{page.offset}
+    </select>
+
+    <select id="countAllCourses" resultType="int">
+        SELECT COUNT(*)
+        FROM COURSES
+    </select>
+
+    <!-- 강의 상세 -->
+    <select id="findCourseDetail"
+            parameterType="map"
+            resultType="org.example.project.model.dto.CourseDetailDto">
+        SELECT c.id                               AS id,
+               c.title,
+               c.description_simple               AS descriptionSimple,
+               c.description                      AS description,
+               COALESCE(e.status, 'NOT_ENROLLED') AS enrollmentStatus,
+               COALESCE(e.progress_rate, 0)       AS progressRate,
+               c.deadline,
+               u.name                             AS teacherName
+        FROM COURSES c
+                 JOIN USERS u ON c.teacher_id = u.id
+                 LEFT JOIN ENROLLMENTS e ON c.id = e.course_id AND e.user_id = #{userId}
+        WHERE c.id = #{courseId}
+    </select>
+
+    <!-- 강의 섹션 + 강의 목록 -->
+    <select id="findSectionsWithLectures" parameterType="long"
+            resultMap="SectionWithLecturesResultMap">
+        SELECT s.id       AS section_id,
+               s.title    AS section_title,
+               l.id       AS lecture_id,
+               l.title    AS lecture_title,
+               l.duration AS duration
+        FROM LECTURE_SECTIONS s
+                 LEFT JOIN LECTURES l ON s.id = l.section_id
+        WHERE s.course_id = #{courseId}
+        ORDER BY s.order_index, l.order_index
+    </select>
+
+    <resultMap id="SectionWithLecturesResultMap" type="org.example.project.model.dto.LectureSectionDto">
+        <id property="id" column="section_id"/>
+        <result property="title" column="section_title"/>
+        <collection property="lectures" ofType="org.example.project.model.dto.LectureDto">
+            <id property="id" column="lecture_id"/>
+            <result property="title" column="lecture_title"/>
+            <result property="duration" column="duration"/>
+        </collection>
+    </resultMap>
+
+
+</mapper>

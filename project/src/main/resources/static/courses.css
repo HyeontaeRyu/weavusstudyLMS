@@ -1,0 +1,148 @@
+.courses-container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.page-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+
+.courses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.course-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-height: 380px;
+}
+
+.course-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-top {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.6rem;
+    color: #111;
+}
+
+.course-desc {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    min-height: 70px;
+}
+
+.course-deadline {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: bold;
+    margin-top: auto;
+}
+
+.card-bottom {
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.course-meta {
+    margin-bottom: 1rem;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.course-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
+
+.course-actions a,
+.course-actions button {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 0.45rem 0;
+    font-weight: bold;
+    border: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.btn-active,
+.btn-enroll,
+.btn-pending,
+.btn-continue,
+.btn-review {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-active:hover,
+.btn-enroll:hover,
+.btn-pending:hover,
+.btn-continue:hover,
+.btn-review:hover {
+    background-color: #222;
+}
+
+.btn-disabled {
+    background-color: #e0e0e0;
+    color: #999;
+    border: 1px solid #ccc;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 1rem;
+}
+
+.pagination a {
+    text-decoration: none;
+    color: #333;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.pagination a:hover {
+    background: #f0f0f0;
+    border-color: #888;
+}
+
+.pagination span {
+    color: #555;
+    font-size: 0.9rem;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'試験 - ' + ${exam.title}"></title>
+    <link rel="stylesheet" th:href="@{/static/exam-take.css}">
+</head>
+<body>
+<header class="exam-header">
+    <div class="header-left">
+        残り時間：<span id="time-left">--:--</span>
+    </div>
+    <div class="header-right">
+        問題数：<span th:text="${questions.size()}"></span>問中
+        <span id="answered-count">0</span>問回答済み
+    </div>
+</header>
+
+<div class="exam-container">
+    <main>
+        <form id="examForm" method="post" th:action="@{/exams/{id}/submit(id=${exam.id})}">
+            <div class="question-block" th:each="q, stat : ${questions}" th:id="'question-' + ${stat.index + 1}">
+                <p class="question-number">[[${stat.index + 1}]]. [[${q.questionText}]]</p>
+
+                <div th:if="${q.questionType == 'SINGLE'}">
+                    <label th:each="opt : ${q.parsedOptions}">
+                        <input th:name="'answers[' + ${q.id} + ']'" th:value="${opt}" type="radio">
+                        [[${opt}]]
+                    </label>
+                </div>
+
+                <div th:if="${q.questionType == 'MULTI'}">
+                    <label th:each="opt : ${q.parsedOptions}">
+                        <input th:name="'answers[' + ${q.id} + '][]'" th:value="${opt}" type="checkbox">
+                        [[${opt}]]
+                    </label>
+                </div>
+
+                <div th:if="${q.questionType == 'TEXT'}">
+                    <textarea th:name="'answers[' + ${q.id} + ']'"></textarea>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <aside class="exam-sidebar">
+        <div class="sidebar-inner">
+            <div class="question-list">
+                <h3>問題一覧</h3>
+                <ul>
+                    <li th:each="q, stat : ${questions}">
+                        <a href="#" th:onclick="'scrollToQuestion(' + (${stat.index + 1}) + '); return false;'">
+                            [[${stat.index + 1}]]
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <button class="submit-btn" onclick="submitExam()">提出する</button>
+        </div>
+    </aside>
+</div>
+
+<script th:inline="javascript">
+    const examDurationMinutes = /*[[${durationMinutes}]]*/ 0;
+</script>
+<script src="/static/exam-take.js"></script>
+</body>
+</html>

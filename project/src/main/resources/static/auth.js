@@ -1,41 +1,13 @@
-async function fetchWithToken(url, options = {}) {
-    let accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
+async function logout() {
+    const res = await fetch("/auth/logout", {
+        method: "POST",
+        credentials: "include"
+    });
 
-    options.headers = {
-        ...(options.headers || {}),
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + accessToken
-    };
-
-    let res = await fetch(url, options);
-
-    if (res.status === 401 && refreshToken) {
-        const refreshRes = await fetch("/auth/refresh", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({refreshToken})
-        });
-
-        if (refreshRes.ok) {
-            const data = await refreshRes.json();
-            accessToken = data.accessToken;
-            localStorage.setItem("accessToken", accessToken);
-
-            options.headers["Authorization"] = "Bearer " + accessToken;
-            res = await fetch(url, options);
-        } else {
-            localStorage.clear();
-            window.location.href = "/auth/login";
-        }
+    if (res.ok) {
+        console.log("로그아웃 성공");
+        window.location.href = "/auth/login";
+    } else {
+        alert("ログアウトに失敗しました。");
     }
-
-    return res;
-}
-
-function logout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("role");
-    window.location.href = "/auth/login";
 }

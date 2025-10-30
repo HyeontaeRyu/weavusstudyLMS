@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>試験一覧 | 学習管理システム</title>
+    <link rel="stylesheet" th:href="@{/static/common.css}">
+    <link rel="stylesheet" th:href="@{/static/exam-list.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/tabs :: tabs(activeTab='exams')}"></div>
+
+<main class="exam-container">
+    <h2 class="page-title">受験可能な試験一覧</h2>
+
+    <div class="no-exam" th:if="${#lists.isEmpty(exams)}">
+        <p>現在受験可能な試験はありません。</p>
+    </div>
+
+    <div class="exam-list" th:if="${!#lists.isEmpty(exams)}">
+        <div class="exam-card" th:each="exam : ${exams}">
+            <h3 th:text="${exam.courseTitle}"></h3>
+            <p class="exam-title" th:text="${exam.examTitle}"></p>
+
+            <div class="exam-actions">
+                <!-- 응시 가능 -->
+                <a class="btn-take"
+                   th:href="@{'/courses/' + ${exam.courseId} + '/exams'}"
+                   th:if="${!exam.isTaken}">
+                    受験する
+                </a>
+
+                <!-- 응시 완료 -->
+                <button class="btn-status submitted"
+                        disabled
+                        th:if="${exam.resultStatus == 'SUBMITTED'}">
+                    応試完了
+                </button>
+
+                <!-- 채점 완료 -->
+                <a class="btn-status graded"
+                   th:href="@{'/exams/' + ${exam.examId} + '/result'}"
+                   th:if="${exam.resultStatus == 'GRADED'}">
+                    採点済み
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination" th:if="${examPage.totalPages > 1}">
+        <a th:href="@{/exams(page=${examPage.page - 1})}"
+           th:if="${examPage.page > 1}">前へ</a>
+
+        <span th:text="${examPage.page} + ' / ' + ${examPage.totalPages}">1 / 3</span>
+
+        <a th:href="@{/exams(page=${examPage.page + 1})}"
+           th:if="${examPage.page < examPage.totalPages}">次へ</a>
+    </div>
+</main>
+
+</body>
+</html>

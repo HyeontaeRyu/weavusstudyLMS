@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>受講中のコース | 学習管理システム</title>
+    <link rel="stylesheet" th:href="@{/static/common.css}">
+    <link rel="stylesheet" th:href="@{/static/mycourses.css}">
+</head>
+<body>
+
+<div th:replace="~{layout/header :: header}"></div>
+<div th:replace="~{layout/tabs :: tabs(activeTab='mycourses')}"></div>
+
+<main class="mycourses-container">
+    <section class="mycourses-list">
+        <div class="course-card" th:each="course : ${myCourses}">
+            <div class="course-header">
+                <h3 th:text="${course.title}">JavaScript基礎コース</h3>
+                <span th:if="${course.finalGrade != null}"
+                      th:text="'｜最終評価：' + ${course.finalGrade}"></span>
+            </div>
+
+            <div class="course-body">
+                <p class="progress-label">進捗率</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"
+                         th:style="'width:' + ${course.progressRate} + '%'"></div>
+                </div>
+                <div class="progress-footer">
+                    <span th:text="${course.progressRate + '%'}">30%</span>
+
+                    <a class="btn-continue"
+                       th:href="@{'/courses/' + ${course.id} + '/learn'}"
+                       th:if="${course.status == 'ENROLLED'}">続きから学習する</a>
+
+                    <span class="btn-completed"
+                          th:if="${course.status == 'COMPLETED'}">完了済み</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="empty-message" th:if="${#lists.isEmpty(myCourses)}">
+            現在受講中のコースはありません。
+        </p>
+    </section>
+</main>
+
+</body>
+</html>
