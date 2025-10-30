@@ -1,6 +1,9 @@
 package org.example.project.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.project.config.security.CustomUserDetails;
+import org.example.project.mapper.CourseMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,21 +11,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class MainController {
 
-    /* TODO:
-     * - ENROLLMENT 테이블 이거 프로젝트에 맞게 수정
-     * - 대쉬보드 수강중코스 완료코스 평균평가 등 맞게 뜨게 수정
-     * - ENROLLMENT의 경우,
-     * */
+    private final CourseMapper courseMapper;
 
-    @GetMapping
+    @GetMapping("/")
     public String index(Authentication auth, Model model) {
         if (auth == null || !auth.isAuthenticated()) {
             log.debug("Not authenticated — redirecting to login");
             return "redirect:/auth/login";
         }
-        
+
+        CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
+        Long userId = user.getId();
+
+        int enrolledCount = courseMapper.countByStatus(userId, "ENROLLED");
+        int completedCount = courseMapper.countByStatus(userId, "COMPLETED");
+
+        model.addAttribute("enrolledCount", enrolledCount);
+        model.addAttribute("completedCount", completedCount);
         return "index";
     }
 }

@@ -30,5 +30,7 @@ public interface CourseMapper {
 
     List<LectureSectionDto> findSectionsWithLectures(Long courseId);
 
+    int countByStatus(@Param("userId") Long userId, @Param("status") String status);
+
 
 }

@@ -15,19 +15,12 @@
     <section class="summary-cards">
         <div class="card">
             <p class="card-title">受講中コース</p>
-            <p class="card-value">2</p>
-            <p class="card-sub">前月比 +1</p>
+            <p class="card-value" th:text="${enrolledCount}">0</p>
         </div>
 
         <div class="card">
             <p class="card-title">完了コース</p>
-            <p class="card-value">1</p>
-            <p class="card-sub">今月完了</p>
-        </div>
-
-        <div class="card">
-            <p class="card-title">平均評価</p>
-            <p class="card-value grade">B</p>
+            <p class="card-value" th:text="${completedCount}">0</p>
         </div>
     </section>
 

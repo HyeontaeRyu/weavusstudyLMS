@@ -55,7 +55,6 @@
         FROM COURSES
     </select>
 
-    <!-- 강의 상세 -->
     <select id="findCourseDetail"
             parameterType="map"
             resultType="org.example.project.model.dto.CourseDetailDto">
@@ -73,7 +72,6 @@
         WHERE c.id = #{courseId}
     </select>
 
-    <!-- 강의 섹션 + 강의 목록 -->
     <select id="findSectionsWithLectures" parameterType="long"
             resultMap="SectionWithLecturesResultMap">
         SELECT s.id       AS section_id,
@@ -97,5 +95,10 @@
         </collection>
     </resultMap>
 
-
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*)
+        FROM ENROLLMENTS
+        WHERE user_id = #{userId}
+          AND status = #{status}
+    </select>
 </mapper>
