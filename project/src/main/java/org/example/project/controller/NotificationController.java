@@ -1,45 +1,45 @@
 package org.example.project.controller;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.project.config.security.CustomUserDetails;
-import org.example.project.mapper.CourseMapper;
 import org.example.project.model.Notification;
 import org.example.project.service.NotificationService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @Controller
+@RequestMapping("/notifications")
 @RequiredArgsConstructor
-public class MainController {
+public class NotificationController {
 
-    private final CourseMapper courseMapper;
     private final NotificationService notificationService;
 
-    @GetMapping("/")
-    public String index(Authentication auth, Model model) {
-        if (auth == null || !auth.isAuthenticated()) {
-            log.debug("Not authenticated — redirecting to login");
-            return "redirect:/auth/login";
-        }
-
+    @GetMapping
+    public String list(Authentication auth, Model model) {
         CustomUserDetails user = (CustomUserDetails) auth.getPrincipal();
         Long userId = user.getId();
 
-        int enrolledCount = courseMapper.countByStatus(userId, "ENROLLED");
-        int completedCount = courseMapper.countByStatus(userId, "COMPLETED");
-
         List<Notification> notifications = notificationService.getUserNotifications(userId);
-
-        model.addAttribute("enrolledCount", enrolledCount);
-        model.addAttribute("completedCount", completedCount);
         model.addAttribute("notifications", notifications);
 
-        return "index";
+        return "notification-list";
+    }
+
+    @PostMapping("/{id}/read")
+    @ResponseBody
+    public String markAsRead(@PathVariable Long id) {
+        notificationService.markAsRead(id);
+        return "OK";
+    }
+
+    @PostMapping("/{id}/delete")
+    @ResponseBody
+    public String delete(@PathVariable Long id) {
+        notificationService.deleteNotification(id);
+        return "OK";
     }
 }

@@ -24,13 +24,39 @@
         </div>
     </section>
 
-    <section class="activity-section">
-        <h2>最近の活動</h2>
-        <div id="activity-list">
-            <p>最近の学習履歴はありません。</p>
+    <section class="notification-section">
+        <h2>お知らせ</h2>
+
+        <div class="no-notification" th:if="${#lists.isEmpty(notifications)}">
+            <p>現在お知らせはありません。</p>
+        </div>
+
+        <div class="notification-list" th:if="${!#lists.isEmpty(notifications)}">
+            <div class="notification-item" th:classappend="${n.isRead} ? 'read' : ''" th:each="n : ${notifications}">
+                <div class="notification-content">
+                    <p class="notification-message" th:text="${n.message}"></p>
+                    <p class="notification-time" th:text="${#temporals.format(n.sentAt, 'yyyy-MM-dd HH:mm')}"></p>
+                </div>
+                <div class="notification-actions">
+                    <button th:if="${!n.isRead}" th:onclick="|markAsRead(${n.id})|">既読にする</button>
+                    <button th:onclick="|deleteNotification(${n.id})|">削除</button>
+                </div>
+            </div>
         </div>
     </section>
 </main>
+
+<script>
+    async function markAsRead(id) {
+        await fetch(`/notifications/${id}/read`, {method: 'POST'});
+        location.reload();
+    }
+
+    async function deleteNotification(id) {
+        await fetch(`/notifications/${id}/delete`, {method: 'POST'});
+        location.reload();
+    }
+</script>
 
 </body>
 </html>

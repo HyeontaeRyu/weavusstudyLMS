@@ -12,7 +12,7 @@
 
 .card {
     flex: 1;
-    background: white;
+    background: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 16px;
@@ -34,10 +34,99 @@
     font-weight: bold;
 }
 
-.activity-section {
-    margin-top: 30px;
-    background: white;
+/* ---------------------------
+   お知らせ (Notifications)
+--------------------------- */
+.notification-section {
+    margin-top: 40px;
+    background: #fff;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.notification-section h2 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px 15px;
+    transition: background 0.2s ease;
+}
+
+.notification-item:hover {
+    background: #f1f1f1;
+}
+
+.notification-item.read {
+    opacity: 0.6;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-message {
+    margin: 0;
+    color: #222;
+    font-size: 0.95rem;
+}
+
+.notification-time {
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: #777;
+}
+
+.notification-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.notification-actions button {
+    border: none;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.notification-actions button:first-child {
+    background: #0078d4;
+    color: #fff;
+}
+
+.notification-actions button:first-child:hover {
+    background: #005fa3;
+}
+
+.notification-actions button:last-child {
+    background: #aaa;
+    color: #fff;
+}
+
+.notification-actions button:last-child:hover {
+    background: #888;
+}
+
+.no-notification {
+    text-align: center;
+    color: #777;
+    margin: 40px 0;
 }
